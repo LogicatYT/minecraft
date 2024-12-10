@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Server Control</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .btn-red {
+            background-color: #ff4d4d; color: white;
+            
+        }
+        .btn-orange {
+            background-color: #ff9933; color: white;
+            
+        }
+        .btn-yellow {
+            background-color: #ffcc00; color: white;
+            
+        }
+        .btn-green {
+            background-color: #33cc33; color: white;
+            
+        }
+        .btn-blue {
+            background-color: #3399ff; color: white;
+            
+        }
+        .btn-violet {
+            background-color: #cc33ff; color: white;
+            
+        }
+        .btn-pink {
+            background-color: #f2a7c7; color: white;
+            
+        }
+        .btn {
+            transition: transform 0.2s ease-in-out, background-color 2147483647s ease-in-out;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            background-color: inherit; /* Keeps the same background color */
+        }
+    </style>
+</head>
+<body class="bg-dark">
+    <div class="container my-4">
+        <h1 class="text-center mb-4 text-white">Gunawan.smp Control Panel</h1>
+        <div class="row gy-4">
+            <!-- Server Control -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">Server</div>
+                    <div class="card-body d-flex flex-wrap gap-2 bg-dark">
+                        <button class="btn btn-green w-100" onclick="StartServer()">Start</button>
+                        <button class="btn btn-red w-100" onclick="StopServer()">Stop</button>
+                        <button class="btn btn-primary w-100" onclick="Save()">Save</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Game Mode -->
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header text-white btn-red">Game Mode</div>
+                    <div class="card-body d-flex flex-wrap gap-2 bg-dark">
+                        <button class="btn btn-red w-100" onclick="GameMode('survival')">Survival</button>
+                        <button class="btn btn-red w-100" onclick="GameMode('creative')">Creative</button>
+                        <button class="btn btn-red w-100" onclick="GameMode('adventure')">Adventure</button>
+                        <button class="btn btn-red w-100" onclick="GameMode('spectator')">Spectator</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Difficulty -->
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header text-dark btn-orange">Difficulty</div>
+                    <div class="card-body d-flex flex-wrap gap-2 bg-dark">
+                        <button class="btn btn-orange w-100" onclick="Dificulty('peaceful')">Peaceful</button>
+                        <button class="btn btn-orange w-100" onclick="Dificulty('easy')">Easy</button>
+                        <button class="btn btn-orange w-100" onclick="Dificulty('normal')">Normal</button>
+                        <button class="btn btn-orange w-100" onclick="Dificulty('hard')">Hard</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Player Management -->
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header text-black btn-yellow">Player Management</div>
+                    <div class="card-body d-flex flex-wrap gap-2 bg-dark">
+                        <button class="btn btn-yellow w-100" onclick="Op()">Op</button>
+                        <button class="btn btn-yellow w-100" onclick="Deop()">Deop</button>
+                        <button class="btn btn-yellow w-100" onclick="Kick()">Kick</button>
+                        <button class="btn btn-yellow w-100" onclick="Ban()">Ban</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Player Data -->
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header text-white btn-green">Player Data</div>
+                    <div class="card-body d-flex flex-wrap gap-2 bg-dark">
+                        <button class="btn btn-green w-100" onclick="Give()">Give</button>
+                        <button class="btn btn-green w-100" onclick="Clear()">Clear</button>
+                        <button class="btn btn-green w-100" onclick="Expereance('grant')">Grant XP</button>
+                        <button class="btn btn-green w-100" onclick="Expereance('revoke')">Revoke XP</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Chat -->
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header text-white btn-blue">Chat</div>
+                    <div class="card-body d-flex flex-wrap gap-2 bg-dark">
+                        <button class="btn btn-blue w-100" onclick="Say()">Say</button>
+                        <button class="btn btn-blue w-100" onclick="Msg()">Msg</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Attributes -->
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header text-white btn-violet">Attributes</div>
+                    <div class="card-body d-flex flex-wrap gap-2 bg-dark">
+                        <button class="btn btn-violet w-100" onclick="WorldBorder()">World Border</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Game Rules -->
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header text-black btn-pink">Game Rules</div>
+                    <div class="card-body d-flex flex-wrap gap-2 bg-dark">
+                        <button class="btn btn-pink w-100" onclick="GameRule()">Change Rule</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function sendCommand(command) {
+            fetch('/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: command })
+            }).then(response => response.text()).then(alert);
+        }
+        function StartServer() {
+            fetch('/start', { method: 'POST' }).then(response => response.text()).then(alert);
+        }
+        function StopServer() {
+            fetch('/stop', { method: 'POST' }).then(response => response.text()).then(alert);
+        }
+        function Ban() {
+            sendCommand('/ban '+readLine("who needs to be banned?"));
+        }
+        function Dificulty(newDificulty) {
+            sendCommand('/dificulty '+ newDificulty);
+        }
+        function GameRule() {
+            sendCommand('/gamerule '+readLine("what game rule needs to be changed?") + ' '+readLine("what is the new value?"));
+        }
+        function GameMode(newGameMode) {
+            sendCommand('/gamemode '+ newGameMode +readLine("who do these changes need to be applied to?"));
+        }
+        function Kick() {
+            sendCommand('/kick '+readLine("who needs to be kicked?"));
+        }
+        function Op() {
+            sendCommand('/op '+readLine("who do you want to op?"));
+        }
+        function Deop() {
+            sendCommand('/deop '+readLine("who do you want to deop?"));
+        }
+        function Save() {
+            sendCommand('/save');
+        }
+        function Time(newtime) {
+            if(newtime == "other"){
+                newtime = readLine("what is the new time?");
+            }
+            sendCommand('/time set '+ newtime);
+        }
+        function Weather(newWeather) {
+            sendCommand('/time '+ newWeather);
+        }
+        function Give() {
+            sendCommand('/give '+readLine("who needs the item?")+' '+readLine("what is the item you wnt to give?")+' '+readLine("how much?"));
+        }
+        function Clear() {
+            sendCommand('/Clear '+readLine("who do you want to take items from?"));
+        }
+        function Expereance() {
+            sendCommand('/expereance add '+readLine("who needs the xp?")+' '+readLine("how much do you want to give them?"));
+        }
+        function WorldBorder() {
+            sendCommand('/worldborder '+readLine("how far out do you want the border?"));
+        }
+        function Advancement(mode) {
+            sendCommand('/advancement '+ mode +' '+readLine("who needs the advancement?")+' '+readLine("all advancements(evrything)/just one(only)?")+' '+readLine("the target advancement (only answer if you are useing the only tag)"));
+        }
+        function Say() {
+            sendCommand('/say '+readLine("what do you want to say?"));
+        }
+        function Msg() {
+            sendCommand('/msg '+readLine("who do you want to send a mesage to?")+' '+readLine("what do you want to say?"));
+        }
+        function OtherComand() {
+            sendCommand('/msg '+readLine("enter your command."));
+        }
+    </script>
+</body>
+</html>
